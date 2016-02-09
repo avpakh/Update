@@ -1,0 +1,342 @@
+{% extends "index_maps.html" %}
+
+{% block content %}
+
+{% load thumbnail %}
+
+ <div class="row">
+                <div class="col-lg-10">
+                    <h3 class="page-header">Выбор карт для отображения</h3>
+                </div>
+                <div class="col-lg-1 text-center">
+
+
+                <!-- /.col-lg-12 -->
+  </div>
+
+ <script type="text/javascript">
+ function getVal(sel)
+ {
+ window.alert(sel.text())
+
+     }
+</script>
+
+
+ <div class="col-lg-12">
+
+
+  <div class="row">
+
+     <div class="col-lg-10">
+
+        <div class="container">
+
+           <form role="form"  action="." method="post"> {% csrf_token %}
+              <div class="form-group col-sm-5">
+                  <h4>Выбор вида карты:</h4>
+
+                  <label class="radio" >
+                  {% ifequal valopt "option1" %}
+                      <input name="radioGroup" id="radio1" value="option1" checked="" type="radio" onchange="this.form.submit();" > Карта опасности наводнений
+
+                  {% else %}
+                      <input name="radioGroup" id="radio1" value="option1" type="radio" onchange="this.form.submit();"> Карта опасности наводнений
+
+                 {% endifequal %}
+                 </label>
+
+                 <label class="radio">
+                 {% ifequal valopt "option2" %}
+
+                     <input name="radioGroup" id="radio2" value="option2" checked="" type="radio" onchange="this.form.submit();">Карта вероятного ущерба (карта риска) наводнений
+
+                  {% else %}
+
+                     <input name="radioGroup" id="radio2" value="option2" type="radio" onchange="this.form.submit();">Карта вероятного ущерба (карта риска) наводнений
+
+                  {% endifequal %}
+                 </label>
+
+                <h4>C учетом прорыва дамб:</h4>
+                     <p> </p>
+
+                <label class="radio" >
+                    {% ifequal valdamb "yes" %}
+                       <input name="damba" id="radio1" value="yes" checked="" type="radio" onchange="this.form.submit();"> да
+
+                     {% else %}
+                        <input name="damba" id="radio1" value="yes" type="radio" onchange="this.form.submit();"> да
+
+                   {% endifequal %}
+                </label>
+
+               <label class="radio">
+                   {% ifequal valdamb "no" %}
+
+                      <input name="damba" id="radio2" value="no" checked="" type="radio" onchange="this.form.submit();"> нет
+
+
+                   {% else %}
+
+                      <input name="damba" id="radio2" value="no" type="radio" onchange="this.form.submit();"> нет
+
+                   {% endifequal %}
+               </label>
+         </div>
+
+         <div class="form-group col-sm-2">
+
+         </div>
+
+               <div class="form-group col-sm-5">
+
+                  <h4>Выбор речного бассейна:</h4>
+
+                     <p></p>
+
+                      <select size="4" multiple class="form-control col-sm-4" onchange="this.form.submit();"  name="river_list" >
+                        {% for river in rivers %}
+                           {% ifequal river.river_basin selvalue %}
+                               <option selected="selected"  value="{{ river.river_basin }}"  > {{river.river_basin}} </option>
+
+
+                        {% else %}
+                               <option value="{{river.river_basin }}">{{river.river_basin}}</option>
+                          {% endifequal %}
+                        {% endfor %}
+
+                       </select>
+               </div>
+
+
+
+      {% ifequal show "yes" %}
+
+     <div class="col-lg-12">
+
+
+
+         <div class="panel panel-primary ">
+
+                <div class="panel-heading">
+                    <h4> Доступные карты для отображения :</h4>
+                </div>
+
+        <div class="row">
+
+
+        <div class="form-group col-lg-1">
+        </div>
+
+
+       <div class="form-group col-lg-5">
+
+
+                 {% ifequal proba1 "ch1" %}
+
+
+                    <label class="checkbox">
+                    {% ifequal v1 "1" %}
+                        <input name="chbox1" type="checkbox" value="ch1" id="inlineCheckbox1" checked="" onchange="this.form.submit();" > 0.5% (раз в 200 лет). Низковероятностный сценарий
+                     {% else %}
+                         <input name="chbox1" type="checkbox" disabled="disabled"  value="ch1" id="inlineCheckbox1" checked="" onchange="this.form.submit();" > <strike>0.5% (раз в 200 лет). Низковероятностный сценарий </strike>
+                     {% endifequal %}
+                      </label>
+
+                 {% else %}
+
+                     <label class="checkbox">
+
+                       {% ifequal v1 "1" %}
+                        <input name="chbox1" type="checkbox"  value="ch1" id="inlineCheckbox1" onchange="this.form.submit();"  > 0.5% (раз в 200 лет). Низковероятностный сценарий
+                        {% else %}
+                         <input name="chbox1" type="checkbox" disabled="disabled" value="" id="inlineCheckbox1" onchange="this.form.submit();" > <strike> 0.5% (раз в 200 лет). Низковероятностный сценарий </strike>
+                         {% endifequal %}
+
+                     </label>
+
+               {% endifequal %}
+
+         </div>
+
+           <div class="form-group col-lg-1">
+           </div>
+
+        <div class="form-group col-lg-5">
+
+        {% ifequal proba2 "ch2" %}
+         <label class="checkbox">
+            {% ifequal v2 "1" %}
+                   <input name="chbox2" type="checkbox" value="ch2" id="inlineCheckbox2" checked=""  onchange="this.form.submit();" > 1% (раз в 100 лет). Cредневероятностный сценарий
+            {% else %}
+                <input name="chbox2" type="checkbox" disabled="disabled" value="ch2" id="inlineCheckbox2" checked="" onchange="this.form.submit();" > <strike> 1% (раз в 100 лет). Cредневероятностный сценарий </strike>
+               {% endifequal %}
+            </label>
+
+       {% else %}
+
+        <label class="checkbox">
+
+               {% ifequal v2 "1" %}
+                 <input name="chbox2" type="checkbox"  value="ch2" id="inlineCheckbox2" onchange="this.form.submit();" >  1% (раз в 100 лет). Cредневероятностный сценарий
+                   {% else %}
+                <input name="chbox2" type="checkbox" disabled="disabled" value="" id="inlineCheckbox2" onchange="this.form.submit();" > <strike> 1% (раз в 100 лет). Cредневероятностный сценарий </strike>
+                  {% endifequal %}
+            </label>
+
+       {% endifequal %}
+
+       </div>
+
+      </div>
+
+
+      <div class="row">
+
+
+
+     <div class="form-group col-lg-1">
+     </div>
+
+
+    <div class="form-group col-lg-5">
+
+      {% ifequal proba5 "ch5" %}
+       <label class="checkbox">
+             {% ifequal v4 "1" %}
+                <input name="chbox5" type="checkbox"  value="ch5" id="inlineCheckbox5" checked="" onchange="this.form.submit();" > 10% (раз в 50 лет). Cредневероятностный сценарий
+             {% else  %}
+                 <input name="chbox5" type="checkbox" disabled="disabled" value="ch5" id="inlineCheckbox5" checked="" onchange="this.form.submit();" > <strike> 10% (раз в 50 лет). Cредневероятностный сценарий </strike>
+             {% endifequal %}
+       </label>
+
+       {% else %}
+
+        <label class="checkbox">
+           {% ifequal v4 "1" %}
+               <input name="chbox5" type="checkbox"   value="ch5" id="inlineCheckbox5" onchange="this.form.submit();" > 10% (раз в 50 лет). Cредневероятностный сценарий
+           {% else %}
+                <input name="chbox5" type="checkbox"  disabled="disabled" value="" id="inlineCheckbox5" onchange="this.form.submit();" > <strike> 10% (раз в 50 лет). Cредневероятностный сценарий </strike>
+               {% endifequal %}
+               </label>
+
+       {% endifequal %}
+
+       </div>
+
+       <div class="form-group col-lg-1">
+       </div>
+
+
+        <div class="form-group col-lg-5">
+
+
+       {% ifequal proba3 "ch3" %}
+       <label class="checkbox">
+        {% ifequal v3 "1" %}
+          <input name="chbox3" type="checkbox" value="ch3" id="inlineCheckbox2" checked="" onchange="this.form.submit();" > 5% (раз в 20 лет). Высоковероятностный сценарий
+       {% else %}
+           <input name="chbox3" type="checkbox" disabled="disabled" value="ch3" id="inlineCheckbox2" checked="" onchange="this.form.submit();" > <strike> 5% (раз в 20 лет). Высоковероятностный сценарий </strike>
+          {% endifequal %}
+
+            </label>
+
+       {% else %}
+
+        <label class="checkbox">
+          {% ifequal v3 "1" %}
+               <input name="chbox3" type="checkbox" value="ch3" id="inlineCheckbox2" onchange="this.form.submit();" > 5% (раз в 20 лет). Высоковероятностный сценарий
+          {% else %}
+              <input name="chbox3" type="checkbox" disabled="disabled" value="" id="inlineCheckbox2" onchange="this.form.submit();" > <strike> 5% (раз в 20 лет). Высоковероятностный сценарий </strike>
+          {% endifequal %}
+
+
+       </label>
+
+        {% endifequal %}
+        </div>
+
+        </div>
+
+       <div class="row">
+
+
+  <div class="form-group col-lg-1">
+   </div>
+
+      <div class="form-group col-lg-5">
+
+
+       {% ifequal proba4 "ch4" %}
+       <label class="checkbox">
+        {% ifequal v5 "1" %}
+          <input name="chbox4" type="checkbox" value="ch4" id="inlineCheckbox2" checked="" onchange="this.form.submit();" > 25% (раз в 4 года). Высоковероятностный сценарий
+        {% else %}
+            <input name="chbox4" type="checkbox" disabled="disabled" value="ch4" id="inlineCheckbox2" checked="" onchange="this.form.submit();" > <strike> 25% (раз в 4 года). Высоковероятностный сценарий </strike>
+        {% endifequal %}
+
+        </label>
+
+       {% else %}
+
+        <label class="checkbox">
+          {% ifequal v5 "1" %}
+          <input name="chbox4" type="checkbox" value="ch4" id="inlineCheckbox2" onchange="this.form.submit();" > 25% (раз в 4 года). Высоковероятностный сценарий
+         {% else %}
+          <input name="chbox4" type="checkbox" disabled="disabled" value="" id="inlineCheckbox2" onchange="this.form.submit();" > <strike> 25% (раз в 4 года). Высоковероятностный сценарий </strike>
+        {% endifequal %}
+          </label>
+
+        {% endifequal %}
+
+       </div>
+
+       </div>
+
+      {% endifequal %}
+      <br>
+    </form>
+
+
+   </div>
+
+  </div>
+
+  </div>
+
+
+
+
+         <div id="maps">
+
+               {% for map in mapsflood  %}
+
+                 <div class="col-lg-10 ">
+
+                             <div class="thumbnail">
+
+
+                             {% thumbnail map.map_image "1024x800"  as im %}
+                                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ map.descr}}" >
+                             {% endthumbnail %}
+
+                              </div>
+
+
+
+                        </div>
+
+                 </div>
+               {% endfor %}
+
+
+          </div>
+
+
+</div>
+
+</div>
+
+
+{% endblock %}
